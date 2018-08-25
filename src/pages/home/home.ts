@@ -1,3 +1,4 @@
+import { AddPage } from './../add/add';
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import leaflet from 'leaflet';
@@ -9,14 +10,14 @@ import leaflet from 'leaflet';
 export class HomePage {
   map: any;
 
-  constructor(public navCtrl: NavController) {
-
-  }
+  constructor(public navCtrl: NavController) {}
 
   ionViewDidEnter() {
     this.loadmap();
   }
-
+  goAddPage () {
+    this.navCtrl.push(AddPage)
+  }
   loadmap() {
     if (this.map) {
       return;
