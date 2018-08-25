@@ -1,3 +1,15 @@
 page-home {
 
 }
+
+#map {
+    z-index: 1;
+}
+
+#add {
+    position: absolute;
+    font-size: 5rem;
+    bottom : 1rem;
+    right: 1rem;
+    z-index: 2;
+}
