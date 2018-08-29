@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      ルートを追加
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <form #form="ngForm" (ngSubmit)="add()" novalidate>
+  <ion-list>
+    <ion-item>
+      <ion-label stacked>ルートラボのURL</ion-label>
+      <ion-input type="text" required ngControll="url" [(ngModel)]="route.url" [ngModelOptions]="{standalone:true}"></ion-input>
+    </ion-item>
+  </ion-list>
+  <button ion-button block type="submit">追加</button>
+  </form>
+
+
+</ion-content>
