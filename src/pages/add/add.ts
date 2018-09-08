@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { HttpClient } from '@angular/common/http';
+import xml2js from 'xml2js';
 
 @Component({
   selector: 'page-add',
@@ -25,14 +26,38 @@ export class AddPage {
     if (!m) {
       return;
     }
-    let req:string = 'https://latlonglab.yahoo.co.jp/route/get?format=gpx&id='+m[1];
+    let req:string = 'http://localhost/lllab/route/get?format=gpx&id='+m[1];
 
     this.http.get(req, {responseType: 'text'}).subscribe(data => {
       // Read the result field from the JSON response.
-      console.dir(data);
+      this.parseXML(data)
+      .then((d)=>
+      {
+         console.dir(d)
+      });
     });
 
     // 圧倒的につまづいてる。
     // https://forum.ionicframework.com/t/ionic-2-form-with-ngmodel/123136/5 ここ参照でつづける
+  }
+
+
+  parseXML(data)
+  {
+     return new Promise(resolve =>
+     {
+        var k,
+            arr    = [],
+            parser = new xml2js.Parser(
+            {
+               trim: true,
+               explicitArray: true
+            });
+
+        parser.parseString(data, function (err, result)
+        {
+           resolve(result);
+        });
+     });
   }
 }
