@@ -28,17 +28,16 @@ export class AddPage {
     }
     let req:string = 'http://localhost/lllab/route/get?format=gpx&id='+m[1];
 
-    this.http.get(req, {responseType: 'text'}).subscribe(data => {
+    this.http.get(req, {responseType: 'text'}).subscribe(response => {
       // Read the result field from the JSON response.
-      this.parseXML(data)
-      .then((d)=>
+      this.parseXML(response)
+      .then((data)=>
       {
-         console.dir(d)
+        let title:string = data.gpx.trk[0].name;
+        let segment:Array<Object> = data.gpx.trk[0].trkseg[0];
+        // このあとstorageする
       });
     });
-
-    // 圧倒的につまづいてる。
-    // https://forum.ionicframework.com/t/ionic-2-form-with-ngmodel/123136/5 ここ参照でつづける
   }
 
 
@@ -46,14 +45,11 @@ export class AddPage {
   {
      return new Promise(resolve =>
      {
-        var k,
-            arr    = [],
-            parser = new xml2js.Parser(
+        var parser = new xml2js.Parser(
             {
                trim: true,
                explicitArray: true
             });
-
         parser.parseString(data, function (err, result)
         {
            resolve(result);
