@@ -6,7 +6,7 @@ import xml2js from 'xml2js';
 
 interface Route {
   title:String;
-  segment:Array<Object>;
+  segment:Array<Array<Number>>;
 }
 
 @Component({
@@ -68,10 +68,10 @@ export class AddPage {
             segment:[],
           }
           for (const i in result.gpx.trk[0].trkseg[0].trkpt) {
-            ret.segment.push({
-              Lat: result.gpx.trk[0].trkseg[0].trkpt[i].$.lat,
-              Lon: result.gpx.trk[0].trkseg[0].trkpt[i].$.lon
-            });
+            ret.segment.push([
+              result.gpx.trk[0].trkseg[0].trkpt[i].$.lat,
+              result.gpx.trk[0].trkseg[0].trkpt[i].$.lon
+            ]);
           }
 //          console.dir(ret);
           resolve(ret);

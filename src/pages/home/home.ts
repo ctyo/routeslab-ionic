@@ -1,5 +1,6 @@
 import { AddPage } from './../add/add';
 import { Component } from '@angular/core';
+import { Storage } from '@ionic/storage';
 import { NavController } from 'ionic-angular';
 import leaflet from 'leaflet';
 
@@ -9,12 +10,32 @@ import leaflet from 'leaflet';
 })
 export class HomePage {
   map: any;
+  routes:Array<any> = [];
 
-  constructor(public navCtrl: NavController) {}
+  constructor(public navCtrl: NavController, private storage: Storage) {}
 
   ionViewDidEnter() {
     this.loadmap();
+
+
+    this.storage.forEach( (route, url) => {
+      if (route.segment && route.segment.length > 0) {
+        const line = leaflet.polyline(route.segment,{
+          "color": "#0000ff",
+          "weight": 6,
+          "opacity": 0.5
+        });//.addTo(this.featureGroup);
+        line.addTo(this.map);
+        this.routes.push(line);
+      }
+    }).then(() => {
+      const featureGroup = new leaflet.FeatureGroup(this.routes);
+      this.map.fitBounds(featureGroup.getBounds());
+
+      //this.featureGroup.addTo(this.map);
+    });
   }
+
   goAddPage () {
     this.navCtrl.push(AddPage)
   }
@@ -28,12 +49,5 @@ export class HomePage {
       attributions: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
       maxZoom: 18
     }).addTo(this.map);
-    this.map.locate({
-      setView: true,
-      maxZoom: 10
-    }).on('locationfound', (e) => {
-      console.log('found you');
-      })
-    }
   }
-
+}
