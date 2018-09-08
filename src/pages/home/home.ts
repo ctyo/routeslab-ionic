@@ -29,10 +29,10 @@ export class HomePage {
         this.routes.push(line);
       }
     }).then(() => {
-      const featureGroup = new leaflet.FeatureGroup(this.routes);
-      this.map.fitBounds(featureGroup.getBounds());
-
-      //this.featureGroup.addTo(this.map);
+      if (this.routes.length > 0) {
+        const featureGroup = new leaflet.FeatureGroup(this.routes);
+        this.map.fitBounds(featureGroup.getBounds());
+      }
     });
   }
 
