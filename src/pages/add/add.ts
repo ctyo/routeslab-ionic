@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 import { HttpClient } from '@angular/common/http';
 import xml2js from 'xml2js';
 
@@ -10,7 +11,7 @@ import xml2js from 'xml2js';
 
 export class AddPage {
   url: string;
-  constructor(public navCtrl: NavController, private http: HttpClient) {
+  constructor(public navCtrl: NavController, private http: HttpClient, private storage: Storage) {
     this.url = '';
   }
 
@@ -33,8 +34,8 @@ export class AddPage {
       this.parseXML(response)
       .then((data)=>
       {
-        let title:string = data.gpx.trk[0].name;
-        let segment:Array<Object> = data.gpx.trk[0].trkseg[0];
+        //let title:string = data.gpx.trk[0].name;
+        //let segment:Array<Object> = data.gpx.trk[0].trkseg[0];
         // このあとstorageする
       });
     });
@@ -50,9 +51,24 @@ export class AddPage {
                trim: true,
                explicitArray: true
             });
-        parser.parseString(data, function (err, result)
+        parser.parseString(data, function (err, result:any)
         {
-           resolve(result);
+          interface Route {
+            title:String;
+            segment:Array<Object>;
+          };
+          let ret:Route = {
+            title: result.gpx.trk[0].name,
+            segment:[],
+          }
+          for (const i in result.gpx.trk[0].trkseg[0].trkpt) {
+            ret.segment.push({
+              Lat: result.gpx.trk[0].trkseg[0].trkpt[i].$.lat,
+              Lon: result.gpx.trk[0].trkseg[0].trkpt[i].$.lon
+            });
+          }
+//          console.dir(ret);
+          resolve(ret);
         });
      });
   }
