@@ -4,24 +4,34 @@ import { Storage } from '@ionic/storage';
 import { HttpClient } from '@angular/common/http';
 import xml2js from 'xml2js';
 
+interface Route {
+  title:String;
+  segment:Array<Object>;
+}
+
 @Component({
   selector: 'page-add',
   templateUrl: 'add.html'
 })
-
 export class AddPage {
+  routes: Array<Route>;
   url: string;
   constructor(public navCtrl: NavController, private http: HttpClient, private storage: Storage) {
     this.url = '';
+    var routes:Array<Route> = [];
+    this.routes = routes;
   }
 
-
-
   ionViewDidEnter() {
+    this.storage.forEach( (route, url) => {
+      this.routes.push(route);
+    });
   }
 
   add () {
-    this.url = 'https://latlonglab.yahoo.co.jp/route/watch?id=6f4844c46b63c38d43f4aaeefd34619c';
+    if (!this.url) {
+      this.url = 'https://latlonglab.yahoo.co.jp/route/watch?id=6f4844c46b63c38d43f4aaeefd34619c';
+    }
 
     let m = this.url.match(/https:\/\/latlonglab\.yahoo\.co\.jp\/route\/watch\?id=(.+)/);
     if (!m) {
@@ -32,11 +42,11 @@ export class AddPage {
     this.http.get(req, {responseType: 'text'}).subscribe(response => {
       // Read the result field from the JSON response.
       this.parseXML(response)
-      .then((data)=>
+      .then((route:Route)=>
       {
-        //let title:string = data.gpx.trk[0].name;
-        //let segment:Array<Object> = data.gpx.trk[0].trkseg[0];
-        // このあとstorageする
+        // 保存
+        this.storage.set(this.url, route);
+        this.routes.unshift(route);
       });
     });
   }
@@ -53,10 +63,6 @@ export class AddPage {
             });
         parser.parseString(data, function (err, result:any)
         {
-          interface Route {
-            title:String;
-            segment:Array<Object>;
-          };
           let ret:Route = {
             title: result.gpx.trk[0].name,
             segment:[],
