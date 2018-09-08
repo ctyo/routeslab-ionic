@@ -16,9 +16,11 @@
   </ion-list>
   <button ion-button block type="submit">追加</button>
   </form>
-  
+
   <ion-list>
-    <ion-item *ngFor="let route of routes">{{route.title}}</ion-item>
+    <ion-item *ngFor="let route of routes">
+        <ion-label>{{route.title}}</ion-label>
+    </ion-item>
   </ion-list>
 
 </ion-content>

@@ -14,7 +14,7 @@ interface Route {
   templateUrl: 'add.html'
 })
 export class AddPage {
-  routes: Array<Route>;
+  routes: Array<Route> = [];
   url: string;
   constructor(public navCtrl: NavController, private http: HttpClient, private storage: Storage) {
     this.url = '';
