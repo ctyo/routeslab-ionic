@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import xml2js from 'xml2js';
 
 interface Route {
+  id:String;
   title:String;
   segment:Array<Array<Number>>;
 }
@@ -41,7 +42,7 @@ export class AddPage {
 
     this.http.get(req, {responseType: 'text'}).subscribe(response => {
       // Read the result field from the JSON response.
-      this.parseXML(response)
+      this.parseXML(response, m[1])
       .then((route:Route)=>
       {
         // 保存
@@ -52,7 +53,7 @@ export class AddPage {
   }
 
 
-  parseXML(data)
+  parseXML(data, id)
   {
      return new Promise(resolve =>
      {
@@ -64,6 +65,7 @@ export class AddPage {
         parser.parseString(data, function (err, result:any)
         {
           let ret:Route = {
+            id: id,
             title: result.gpx.trk[0].name,
             segment:[],
           }

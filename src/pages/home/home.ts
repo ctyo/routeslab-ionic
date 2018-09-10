@@ -20,11 +20,20 @@ export class HomePage {
 
     this.storage.forEach( (route, url) => {
       if (route.segment && route.segment.length > 0) {
+        let isWrited = this.routes.find(function(line) {
+          return line.options.id === route.id
+        });
+        if (isWrited) {
+          return
+        }
+
         const line = leaflet.polyline(route.segment,{
           "color": "#0000ff",
           "weight": 6,
-          "opacity": 0.5
+          "opacity": 0.5,
+          "id": route.id
         });//.addTo(this.featureGroup);
+
         line.addTo(this.map);
         this.routes.push(line);
       }
