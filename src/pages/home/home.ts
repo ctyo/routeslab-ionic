@@ -31,8 +31,8 @@ export class HomePage {
           "color": "#0000ff",
           "weight": 6,
           "opacity": 0.5,
-          "id": route.id
-        });//.addTo(this.featureGroup);
+          "id": route.id //楽してrsidを入れたいので型を無視
+        } as any);//.addTo(this.featureGroup);
 
         line.addTo(this.map);
         this.routes.push(line);

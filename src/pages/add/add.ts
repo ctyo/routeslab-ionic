@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
+import { LoadingController } from 'ionic-angular';
 import { HttpClient } from '@angular/common/http';
 import xml2js from 'xml2js';
 
@@ -17,7 +18,12 @@ interface Route {
 export class AddPage {
   routes: Array<Route> = [];
   url: string;
-  constructor(public navCtrl: NavController, private http: HttpClient, private storage: Storage) {
+  constructor(
+      public navCtrl: NavController,
+      private http: HttpClient,
+      private storage: Storage,
+      public loadingCtrl: LoadingController,
+    ) {
     this.url = '';
     var routes:Array<Route> = [];
     this.routes = routes;
@@ -40,6 +46,13 @@ export class AddPage {
     }
     let req:string = 'http://localhost/lllab/route/get?format=gpx&id='+m[1];
 
+
+    // "Please wait..." を表示
+    let loader = this.loadingCtrl.create({
+      spinner: "dots",
+      content: "Please wait..."
+    });
+    loader.present();
     this.http.get(req, {responseType: 'text'}).subscribe(response => {
       // Read the result field from the JSON response.
       this.parseXML(response, m[1])
@@ -48,6 +61,7 @@ export class AddPage {
         // 保存
         this.storage.set(this.url, route);
         this.routes.unshift(route);
+        loader.dismiss();
       });
     });
   }
