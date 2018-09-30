@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { NavController } from 'ionic-angular';
 import leaflet from 'leaflet';
+import { Geolocation } from '@ionic-native/geolocation';
 
 @Component({
   selector: 'page-home',
@@ -11,12 +12,15 @@ import leaflet from 'leaflet';
 export class HomePage {
   map: any;
   routes:Array<any> = [];
+  isGPS: Boolean = false;
 
-  constructor(public navCtrl: NavController, private storage: Storage) {}
+  constructor(
+    public navCtrl: NavController,
+    private storage: Storage,
+    private geolocation: Geolocation) {}
 
   ionViewDidEnter() {
     this.loadmap();
-
 
     this.storage.forEach( (route, url) => {
       if (route.segment && route.segment.length > 0) {
@@ -43,6 +47,22 @@ export class HomePage {
         this.map.fitBounds(featureGroup.getBounds());
       }
     });
+  }
+
+  toggleGPS () {
+    if (this.isGPS) {
+      this.isGPS = false;
+      document.getElementById('gps').style.color = '';
+      return;
+    }
+    this.isGPS = true;
+    document.getElementById('gps').style.color = '#387ef5';
+    this.geolocation.getCurrentPosition().then((resp) => {
+      console.log('Success getting location');
+      this.map.panTo(new leaflet.LatLng(resp.coords.latitude, resp.coords.longitude));
+     }).catch((error) => {
+       console.log('Error getting location', error);
+     });
   }
 
   goAddPage () {
